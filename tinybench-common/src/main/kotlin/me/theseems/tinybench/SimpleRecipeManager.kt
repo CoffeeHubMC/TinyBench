@@ -13,6 +13,21 @@ class SimpleRecipeManager : RecipeManager {
         containerMap[recipeContainer.name] = recipeContainer
     }
 
+    override fun dispose(name: String) {
+        val container = containerMap[name] ?: return
+        container.dispose()
+    }
+
+    override fun drop(name: String) {
+        val container = containerMap[name] ?: return
+        container.dispose()
+        containerMap.remove(name)
+    }
+
+    override fun getAll(): Collection<RecipeContainer<*>> {
+        return containerMap.values
+    }
+
     override fun <T : Recipe> get(type: String): RecipeContainer<T>? {
         @Suppress("UNCHECKED_CAST")
         return containerMap[type] as? RecipeContainer<T>?

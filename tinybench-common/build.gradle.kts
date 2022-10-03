@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "me.theseems"
-version = "1.0-SNAPSHOT"
+version = parent!!.version
 
 repositories {
     mavenCentral()

@@ -10,6 +10,10 @@ class ExactGridRecipeContainer : RecipeContainer<ExactGridRecipe> {
     override val name: String = "exact"
     private val map: MutableMap<GridContainer, Pair<Map<Slot, Int>, ExactGridRecipe>> = mutableMapOf()
 
+    override fun dispose() {
+        map.clear()
+    }
+
     override fun produce(items: ItemMapping, options: RecipeOptions): RecipeContainer.RecipeResult {
         val emptyResult = RecipeContainer.RecipeResult(emptyMap(), items)
 

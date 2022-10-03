@@ -1,9 +1,12 @@
 package me.theseems.tinybench
 
 import me.theseems.tinybench.task.APIInitTask
+import me.theseems.tinybench.task.CommandRegisterTask
 import me.theseems.tinybench.task.RecipeContainerRegisterTask
 import me.theseems.tinybench.task.RecipeParseTask
 import me.theseems.tinybench.task.TinyBenchViewHookupTask
+import me.theseems.tinybench.task.UnregisterRecipesTask
+import me.theseems.tinybench.task.UnregisterViewTask
 import me.theseems.toughwiki.ToughWiki
 import me.theseems.toughwiki.impl.bootstrap.Phase
 import me.theseems.toughwiki.impl.bootstrap.ToughWikiBootstrap
@@ -25,10 +28,13 @@ open class TinyBench : JavaPlugin {
     override fun onEnable() {
         plugin = this
 
-        val bootstrap = ToughWikiBootstrap(plugin.logger)
+        bootstrap = ToughWikiBootstrap(plugin.logger)
         bootstrap.add(APIInitTask())
         bootstrap.add(RecipeContainerRegisterTask())
         bootstrap.add(RecipeParseTask(File(dataFolder, "recipes")))
+        bootstrap.add(CommandRegisterTask())
+        bootstrap.add(UnregisterRecipesTask())
+        bootstrap.add(UnregisterViewTask())
 
         val task = TinyBenchViewHookupTask()
         ToughWiki.getBootstrap().add(task)
@@ -39,5 +45,6 @@ open class TinyBench : JavaPlugin {
 
     companion object {
         lateinit var plugin: TinyBench
+        lateinit var bootstrap: ToughWikiBootstrap
     }
 }

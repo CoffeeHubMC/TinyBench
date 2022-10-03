@@ -5,8 +5,20 @@ plugins {
     application
 }
 
+fun getVersionName(): String {
+    val stdout = `java.io`.ByteArrayOutputStream()
+    exec {
+        commandLine("git", "describe", "--tags")
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+ext {
+    set("devBuild", true)
+}
+
 group = "me.theseems"
-version = "1.0-SNAPSHOT"
+version = if (ext["devBuild"] as Boolean) getVersionName() else "1.0.0"
 
 repositories {
     mavenCentral()

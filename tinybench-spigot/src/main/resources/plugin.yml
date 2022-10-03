@@ -7,3 +7,6 @@ softdepend: [ MythicMobs, ToughWiki ]
 authors: [ TheSeems ]
 description: Plugin for custom recipes
 website: https://github.com/coffeehubmc
+commands:
+  tinybench:
+    description: Main command of the plugin

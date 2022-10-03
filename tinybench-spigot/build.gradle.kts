@@ -8,7 +8,7 @@ val coffeehubUsername: String by project
 val coffeehubPassword: String by project
 
 group = "me.theseems"
-version = "1.0-SNAPSHOT"
+version = parent!!.version
 
 repositories {
     mavenCentral()
@@ -72,6 +72,24 @@ tasks.processResources {
     filesMatching("plugin.yml") {
         expand(props)
     }
+}
+
+val templateSource = file("src/main/templates")
+val templateDest = layout.buildDirectory.dir("generated/sources/templates")
+val generateTemplates = tasks.register<Copy>("generateTemplates") {
+    val props = mapOf("version" to version)
+    for (prop in props) {
+        inputs.property(prop.key, prop.value)
+    }
+
+    from(templateSource)
+    destinationDir = templateDest.get().asFile
+    to(templateDest)
+    expand(props)
+}
+
+sourceSets.main {
+    java.srcDir(generateTemplates.map { it.outputs })
 }
 
 tasks.test {
