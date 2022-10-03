@@ -11,6 +11,8 @@ import me.theseems.tinybench.recipe.RecipeOptions
 import me.theseems.tinybench.slot
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
+import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
@@ -34,6 +36,15 @@ class CraftingPlayerView(
         if (event.isCancelled) {
             return
         }
+
+        if (event.rawSlot < event.view.topInventory.size &&
+            event.slot in resultMapping.values &&
+            event.view.topInventory.getItem(event.slot) == null
+        ) {
+            event.isCancelled = true
+            return
+        }
+
         if (event.isShiftClick && event.currentItem != null && event.rawSlot >= event.view.topInventory.size) {
             event.isCancelled = true
             val item = event.currentItem!!
@@ -67,6 +78,10 @@ class CraftingPlayerView(
             return
         }
         if (event.slot in resultMapping.values && event.view.topInventory.getItem(event.slot) != null) {
+            if (event.cursor?.type != Material.AIR) {
+                event.isCancelled = true
+                return
+            }
             recipeMapping.keys.forEach { inventory.setItem(it, null) }
             pickItems(resultMapping.values)
             keepLeftovers.forEach { (slot, item) ->
@@ -92,7 +107,7 @@ class CraftingPlayerView(
         tryCraft(event)
     }
 
-    fun tryCraft(event: Cancellable) {
+    private fun tryCraft(event: Cancellable) {
         Bukkit.getScheduler().runTask(
             TinyBench.plugin,
             Runnable {
@@ -143,15 +158,8 @@ class CraftingPlayerView(
         Bukkit.getPlayer(playerUUID)?.openInventory(inventory)
     }
 
-    fun dispose(closed: Boolean = false) {
-        val player = Bukkit.getPlayer(playerUUID)
-            ?: throw IllegalStateException(
-                "There's no player to give items to. Expected $playerUUID (${
-                Bukkit.getOfflinePlayer(
-                    playerUUID
-                ).name
-                })"
-            )
+    fun dispose(closePlayer: Player? = null, closed: Boolean = false) {
+        val player = closePlayer ?: Bukkit.getPlayer(playerUUID)
 
         for (entry in resultMapping) {
             inventory.setItem(entry.value, null)
@@ -161,7 +169,7 @@ class CraftingPlayerView(
             val item = inventory.getItem(entry.key)
             if (item != null) {
                 inventory.setItem(entry.key, null)
-                player.inventory.addItem(item)
+                player?.inventory?.addItem(item)
             }
         }
 

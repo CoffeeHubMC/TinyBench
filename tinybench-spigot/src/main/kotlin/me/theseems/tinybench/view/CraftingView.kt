@@ -19,6 +19,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.Inventory
 import java.util.*
 
@@ -39,6 +40,11 @@ class CraftingView(private val page: WikiPage) : Listener, WikiPageView {
     @EventHandler(priority = EventPriority.LOWEST)
     fun onClose(closeEvent: InventoryCloseEvent) {
         inventoryMap[closeEvent.inventory]?.handleClose(closeEvent)
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    fun onLeave(playerQuitEvent: PlayerQuitEvent) {
+        playerMap[playerQuitEvent.player.uniqueId]?.dispose(closePlayer = playerQuitEvent.player)
     }
 
     override fun getPage() = page
