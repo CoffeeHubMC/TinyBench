@@ -18,7 +18,6 @@ import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import java.util.*
-import kotlin.collections.ArrayList
 
 class CraftingPlayerView(
     private val playerUUID: UUID,
@@ -35,6 +34,26 @@ class CraftingPlayerView(
         if (event.isCancelled) {
             return
         }
+        if (event.isShiftClick && event.currentItem != null && event.rawSlot >= event.view.topInventory.size) {
+            event.isCancelled = true
+            val item = event.currentItem!!
+            for (key in recipeMapping.keys) {
+                if (inventory.getItem(key) == null) {
+                    event.currentItem = null
+                    inventory.setItem(key, item)
+                    return
+                } else if (inventory.getItem(key)!!
+                    .isSimilar(item) && inventory.getItem(key)!!.amount + item.amount <= item.maxStackSize
+                ) {
+                    val located = inventory.getItem(key)
+                    located!!.amount += item.amount
+                    event.currentItem = null
+                    return
+                }
+            }
+            return
+        }
+
         tryCraft(event)
 
         if (event.rawSlot >= event.view.topInventory.size) {
