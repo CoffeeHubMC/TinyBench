@@ -21,6 +21,10 @@ repositories {
         url = uri("https://oss.sonatype.org/content/groups/public/")
     }
     maven {
+        name = "Lumine Releases"
+        url = uri("https://mvn.lumine.io/repository/maven-public/")
+    }
+    maven {
         name = "coffeehub"
         url = uri(nexusURL)
         credentials {
@@ -38,6 +42,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.13.4")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.4")
+    compileOnly("io.lumine:Mythic-Dist:5.0.3-SNAPSHOT")
 
     compileOnly("me.theseems:toughwiki:1.0.1:all")
     compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")

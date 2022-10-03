@@ -23,7 +23,6 @@ class TinyBenchViewHookupTask : BootstrapTask("hookupCraftingView", Phase.POST_C
             }
 
             val view = CraftingView(page)
-            println("Registered view for the page: ${page.name}")
             Bukkit.getPluginManager().registerEvents(view, TinyBench.plugin)
 
             ToughWikiAPI.getInstance().viewManager.store(view)

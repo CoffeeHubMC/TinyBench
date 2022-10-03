@@ -80,7 +80,6 @@ class CraftingView(private val page: WikiPage) : Listener, WikiPageView {
     }
 
     override fun dispose() {
-        println("LOL DISPOSING ACTUALLY DOIN IT RIGHT")
         inventoryMap.values.forEach { it.dispose() }
         HandlerList.unregisterAll(this)
     }

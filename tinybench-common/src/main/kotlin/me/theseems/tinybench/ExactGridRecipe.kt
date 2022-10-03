@@ -5,6 +5,7 @@ import me.theseems.tinybench.recipe.Recipe
 
 class ExactGridRecipe(
     override val name: String,
+    val stackable: Boolean,
     val source: GridContainer,
     val target: GridContainer
 ) : Recipe {

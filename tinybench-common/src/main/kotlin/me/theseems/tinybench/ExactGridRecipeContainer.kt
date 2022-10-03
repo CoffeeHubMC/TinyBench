@@ -22,6 +22,13 @@ class ExactGridRecipeContainer : RecipeContainer<ExactGridRecipe> {
         if (options.block?.contains(recipe) == true) {
             return emptyResult
         }
+        if (!recipe.stackable) {
+            val produced = recipe.produce(items)
+            if (produced.isEmpty()) {
+                return emptyResult
+            }
+            return RecipeContainer.RecipeResult(produced, emptyMap())
+        }
 
         var times: Int? = null
         for ((slot, amount) in amounts) {

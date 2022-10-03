@@ -10,8 +10,9 @@ import me.theseems.tinybench.item.Item
 import org.bukkit.Material
 
 class ItemFactory {
-    private val map = mapOf<String, ItemParser>(
-        "bukkit" to BukkitItemParser()
+    private val map = mapOf(
+        "bukkit" to BukkitItemParser(),
+        "mythic" to MythicItemParser()
     )
 
     fun parse(jsonNode: JsonNode): Item {
@@ -25,14 +26,9 @@ class ItemFactory {
                     )
                 )
             }
-
-            if (split[0] == "mythic") {
-                // TODO:
-            }
-
-            throw IllegalStateException("No such type '" + jsonNode.textValue())
+            return map[split[0]]?.parse(ItemConfig(jsonNode.textValue(), mutableMapOf()))
+                ?: throw IllegalStateException("No such type '" + jsonNode.textValue())
         } else {
-            println("HAHA LOL $jsonNode")
             val itemConfig =
                 ObjectMapper(YAMLFactory()).registerKotlinModule().readValue<ItemConfig>(jsonNode.toString())
             return map[itemConfig.type]?.parse(itemConfig)

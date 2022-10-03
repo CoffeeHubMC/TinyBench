@@ -12,7 +12,7 @@ class ReloadSubCommand : SubCommand {
     }
 
     override fun getDescription(): String {
-        return "reloads TinyBench configuration (except for views)"
+        return "reloads configuration"
     }
 
     override fun getPermission(): String {
@@ -20,7 +20,7 @@ class ReloadSubCommand : SubCommand {
     }
 
     override fun execute(sender: CommandSender?, args: Array<out String>?) {
-        TinyBench.bootstrap.execute(Phase.CONFIG, Phase.POST_CONFIG)
+        TinyBench.bootstrap.execute(Phase.SHUTDOWN, Phase.CONFIG, Phase.POST_CONFIG)
         sender?.sendMessage(TextUtils.parse("&5Configuration reloaded"))
     }
 }

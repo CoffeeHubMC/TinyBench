@@ -13,7 +13,6 @@ import me.theseems.toughwiki.api.WikiPageItemConfig
 class BukkitItemParser : ItemParser() {
     override fun parse(itemConfig: ItemConfig): Item {
         val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
-        println("JSON ITEM ${mapper.writeValueAsString(itemConfig)}")
         return ItemStackItem(
             ToughWiki.getItemFactory()
                 .produce(null, mapper.readValue<WikiPageItemConfig>(mapper.writeValueAsString(itemConfig)))

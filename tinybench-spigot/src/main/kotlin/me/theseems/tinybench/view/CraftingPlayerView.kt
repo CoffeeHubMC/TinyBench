@@ -6,6 +6,7 @@ import me.theseems.tinybench.TinyBenchAPI
 import me.theseems.tinybench.item.Item
 import me.theseems.tinybench.item.ItemMapping
 import me.theseems.tinybench.item.ItemStackItem
+import me.theseems.tinybench.item.MythicMobsItem
 import me.theseems.tinybench.recipe.RecipeOptions
 import me.theseems.tinybench.slot
 import net.kyori.adventure.text.Component
@@ -17,6 +18,7 @@ import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import java.util.*
+import kotlin.collections.ArrayList
 
 class CraftingPlayerView(
     private val playerUUID: UUID,
@@ -35,13 +37,10 @@ class CraftingPlayerView(
         }
         tryCraft(event)
 
-        println("Recipe mapping $recipeMapping and result mapping is $resultMapping, slot = ${event.slot}")
         if (event.rawSlot >= event.view.topInventory.size) {
-            println("Self inv -> skip")
             return
         }
         if (event.slot !in recipeMapping && event.slot !in resultMapping.values) {
-            println("Sheeesh no no no")
             event.isCancelled = true
             return
         }
@@ -82,14 +81,6 @@ class CraftingPlayerView(
                     return@Runnable
                 }
 
-                println(
-                    "Recipe!!! Mapping is =" + makeMapping() + " and options " + options + " so the result is " + (
-                        TinyBenchAPI.instance.recipeManager.produce(
-                            makeMapping(),
-                            options
-                        )
-                        )
-                )
                 val (produced, leftovers) = TinyBenchAPI.instance.recipeManager.produce(makeMapping(), options)
                 if (produced.isNotEmpty()) {
                     produced.forEach {
@@ -156,7 +147,8 @@ class CraftingPlayerView(
         }
 
         if (!closed) {
-            inventory.viewers.forEach { it.closeInventory(InventoryCloseEvent.Reason.PLUGIN) }
+            ArrayList(inventory.viewers)
+                .forEach { it.closeInventory(InventoryCloseEvent.Reason.PLUGIN) }
         }
     }
 
@@ -172,13 +164,16 @@ class CraftingPlayerView(
 
     private fun makeItemOutOfItemStack(itemStack: ItemStack): Item {
         // TODO: extend
-        return ItemStackItem(itemStack)
+        return MythicMobsItem.from(itemStack) ?: ItemStackItem(itemStack)
     }
 
     private fun makeItemStackOutOfItem(item: Item): ItemStack? {
         // TODO: extend
         if (item is ItemStackItem) {
             return item.itemStack
+        }
+        if (item is MythicMobsItem) {
+            return item.stack
         }
         return null
     }

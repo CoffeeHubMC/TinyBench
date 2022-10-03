@@ -8,6 +8,7 @@ import me.theseems.tinybench.slot
 import me.theseems.tinybench.task.items.ItemFactory
 import me.theseems.tinybench.toGridContainer
 import me.theseems.tinybench.util.modifier
+import me.theseems.tinybench.util.modifierOr
 import java.util.logging.Logger
 
 class ExactGridRecipeParser : RecipeParser<ExactGridRecipe>() {
@@ -22,6 +23,11 @@ class ExactGridRecipeParser : RecipeParser<ExactGridRecipe>() {
                 ?: throw IllegalStateException("No grid container was found. Check 'input' property of the recipe config ($name')")
         }
 
-        return ExactGridRecipe(name, getGridContainer("input"), getGridContainer("output"))
+        return ExactGridRecipe(
+            name,
+            config.modifierOr("stackable", true),
+            getGridContainer("input"),
+            getGridContainer("output")
+        )
     }
 }
