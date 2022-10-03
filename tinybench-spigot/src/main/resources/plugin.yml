@@ -1,9 +1,9 @@
 name: TinyBench
 version: '${version}'
 main: me.theseems.tinybench.TinyBench
-api-version: 1.19
+api-version: 1.18
 prefix: TinyBench
-softdepend: [ MythicMobs ]
+softdepend: [ MythicMobs, ToughWiki ]
 authors: [ TheSeems ]
 description: Plugin for custom recipes
 website: https://github.com/coffeehubmc

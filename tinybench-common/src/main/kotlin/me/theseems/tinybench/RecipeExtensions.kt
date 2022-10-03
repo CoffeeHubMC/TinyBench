@@ -1,5 +1,8 @@
 package me.theseems.tinybench
 
+import me.theseems.tinybench.item.Item
+import me.theseems.tinybench.recipe.RecipeOptions
+
 fun grid(size: RecipeOptions.SizeOptions, pairs: List<Pair<Slot, Item>>) =
     mapOf(*pairs.toTypedArray()).toGridContainer(size)
 

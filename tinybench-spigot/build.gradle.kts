@@ -1,7 +1,11 @@
 plugins {
     kotlin("jvm") version "1.7.10"
-    application
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
+
+val nexusURL: String by project
+val coffeehubUsername: String by project
+val coffeehubPassword: String by project
 
 group = "me.theseems"
 version = "1.0-SNAPSHOT"
@@ -16,19 +20,31 @@ repositories {
         name = "sonatype"
         url = uri("https://oss.sonatype.org/content/groups/public/")
     }
+    maven {
+        name = "coffeehub"
+        url = uri(nexusURL)
+        credentials {
+            username = coffeehubUsername
+            password = coffeehubPassword
+        }
+    }
 }
 
 dependencies {
-    implementation("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
     implementation(project(":tinybench-api"))
     implementation(project(":tinybench-common"))
 
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.4")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.13.4")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.4")
+
+    compileOnly("me.theseems:toughwiki:1.0.1:all")
+    compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
+
+    testImplementation("me.theseems:toughwiki:1.0.1:all")
     testImplementation(kotlin("test"))
     testImplementation("com.github.seeseemelk:MockBukkit-v1.19:2.120.1")
-}
-
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
 }
 
 var targetJavaVersion = 17

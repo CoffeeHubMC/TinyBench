@@ -1,4 +1,4 @@
-package me.theseems.tinybench
+package me.theseems.tinybench.recipe
 
 interface RecipeOptions {
     interface BlockOptions {
@@ -14,6 +14,10 @@ interface RecipeOptions {
     interface SizeOptions {
         val height: Int
         val width: Int
+
+        fun product(): Int { // i hope it's gonna be int))
+            return height * width
+        }
     }
 
     val block: BlockOptions?

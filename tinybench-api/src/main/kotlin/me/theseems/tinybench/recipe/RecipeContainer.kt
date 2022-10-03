@@ -1,0 +1,14 @@
+package me.theseems.tinybench.recipe
+
+import me.theseems.tinybench.item.ItemMapping
+
+interface RecipeContainer<T : Recipe> {
+    val name: String
+
+    fun store(recipe: T)
+    fun dispose(recipe: T)
+
+    data class RecipeResult(val items: ItemMapping, val leftovers: ItemMapping)
+
+    fun produce(items: ItemMapping, options: RecipeOptions): RecipeResult
+}

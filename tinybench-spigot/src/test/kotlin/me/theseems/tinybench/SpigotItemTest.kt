@@ -3,6 +3,10 @@ package me.theseems.tinybench
 import be.seeseemelk.mockbukkit.MockBukkit
 import be.seeseemelk.mockbukkit.ServerMock
 import me.theseems.tinybench.item.ItemStackItem
+import me.theseems.toughwiki.api.ToughWikiAPI
+import me.theseems.toughwiki.impl.SimpleActionEmitter
+import me.theseems.toughwiki.impl.SimpleWikiPageRepository
+import me.theseems.toughwiki.impl.view.SimpleWikiPageViewManager
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.junit.jupiter.api.AfterAll
@@ -67,6 +71,7 @@ class SpigotItemTest {
         @JvmStatic
         @BeforeAll
         fun setUp() {
+            ToughWikiAPI(SimpleWikiPageViewManager(), SimpleWikiPageRepository(), SimpleActionEmitter())
             server = MockBukkit.mock()
             plugin = MockBukkit.load(TinyBench::class.java)
         }

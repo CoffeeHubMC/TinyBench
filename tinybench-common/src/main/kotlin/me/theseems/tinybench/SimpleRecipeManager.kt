@@ -1,5 +1,11 @@
 package me.theseems.tinybench
 
+import me.theseems.tinybench.item.ItemMapping
+import me.theseems.tinybench.recipe.Recipe
+import me.theseems.tinybench.recipe.RecipeContainer
+import me.theseems.tinybench.recipe.RecipeManager
+import me.theseems.tinybench.recipe.RecipeOptions
+
 class SimpleRecipeManager : RecipeManager {
     private val containerMap: MutableMap<String, RecipeContainer<*>> = mutableMapOf()
 
@@ -12,13 +18,13 @@ class SimpleRecipeManager : RecipeManager {
         return containerMap[type] as? RecipeContainer<T>?
     }
 
-    override fun produce(items: ItemMapping, options: RecipeOptions): ItemMapping {
+    override fun produce(items: ItemMapping, options: RecipeOptions): RecipeContainer.RecipeResult {
         containerMap.values.forEach {
-            val produced = it.produce(items, options)
+            val (produced, leftovers) = it.produce(items, options)
             if (produced.isNotEmpty()) {
-                return produced
+                return RecipeContainer.RecipeResult(produced, leftovers)
             }
         }
-        return emptyMap()
+        return RecipeContainer.RecipeResult(emptyMap(), items)
     }
 }
