@@ -32,11 +32,14 @@ class CraftingPlayerView(
     private var keepLeftovers: Map<Slot, Item> = mutableMapOf()
     var inventory: Inventory = Bukkit.createInventory(Bukkit.getPlayer(playerUUID), size, title)
 
+    val reversedRecipeMapping = recipeMapping.entries.associate { (k, v) -> v to k }
+
     fun handleClick(event: InventoryClickEvent) {
         if (event.isCancelled) {
             return
         }
 
+        // Nothing must happen when player clicks the empty result slot
         if (event.rawSlot < event.view.topInventory.size &&
             event.slot in resultMapping.values &&
             event.view.topInventory.getItem(event.slot) == null
@@ -45,6 +48,7 @@ class CraftingPlayerView(
             return
         }
 
+        // Shift+Click should put selected item in a first applicable slot
         if (event.isShiftClick && event.currentItem != null && event.rawSlot >= event.view.topInventory.size) {
             event.isCancelled = true
             val item = event.currentItem!!
@@ -65,18 +69,26 @@ class CraftingPlayerView(
             return
         }
 
+        // Schedule recipe processing logic to the next tick
         tryCraft(event)
 
+        // We don't care if player clicks and item inside their inventory
         if (event.rawSlot >= event.view.topInventory.size) {
             return
         }
+        // Player must not click anything in our GUI besides slots for recipe and for results
         if (event.slot !in recipeMapping && event.slot !in resultMapping.values) {
             event.isCancelled = true
             return
         }
+        // We now don't care if player clicks a slot for recipe
         if (event.slot in recipeMapping) {
             return
         }
+
+        // When player clicks a slot which stands for result, and it's not empty
+        // then we immediately clear recipe slots and transfer all the results
+        // to their inventory
         if (event.slot in resultMapping.values && event.view.topInventory.getItem(event.slot) != null) {
             if (event.cursor?.type != Material.AIR) {
                 event.isCancelled = true
@@ -85,7 +97,7 @@ class CraftingPlayerView(
             recipeMapping.keys.forEach { inventory.setItem(it, null) }
             pickItems(resultMapping.values)
             keepLeftovers.forEach { (slot, item) ->
-                recipeMapping[options.size.slot(slot)]?.let {
+                reversedRecipeMapping[options.size.slot(slot)]?.let {
                     inventory.setItem(
                         it,
                         makeItemStackOutOfItem(item)
