@@ -11,6 +11,8 @@ import me.theseems.toughwiki.jackson.databind.ObjectMapper
 import me.theseems.toughwiki.jackson.databind.node.ObjectNode
 import me.theseems.toughwiki.jackson.dataformat.yaml.YAMLFactory
 import me.theseems.toughwiki.utils.TextUtils
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -55,6 +57,16 @@ class CraftingView(private val page: WikiPage) : Listener, WikiPageView {
 
     override fun show(player: UUID) {
         if (player !in playerMap) {
+            val sound = page.modifier<String>("resultSound")
+                ?.let {
+                    return@let Sound.sound(
+                        Key.key(it),
+                        Sound.Source.AMBIENT,
+                        page.modifierOr("resultSoundVolume", 1f),
+                        page.modifierOr("resultSoundPitch", 1f)
+                    )
+                }
+
             val view = CraftingPlayerView(
                 player,
                 page.modifierOr("recipeOptions", options(3 x 9)),
@@ -62,6 +74,7 @@ class CraftingView(private val page: WikiPage) : Listener, WikiPageView {
                     ?: throw IllegalStateException("Recipe slots mapping is not defined"),
                 page.modifier("resultSlots")
                     ?: throw IllegalStateException("Recipe's result slots mapping is not defined"),
+                sound,
                 TextUtils.parse(page.info.title),
                 page.info.size * 9
             )

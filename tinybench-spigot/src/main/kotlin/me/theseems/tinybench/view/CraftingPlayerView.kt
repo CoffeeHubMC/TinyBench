@@ -9,6 +9,7 @@ import me.theseems.tinybench.item.ItemStackItem
 import me.theseems.tinybench.item.MythicMobsItem
 import me.theseems.tinybench.recipe.RecipeOptions
 import me.theseems.tinybench.slot
+import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -26,6 +27,7 @@ class CraftingPlayerView(
     private val options: RecipeOptions,
     private val recipeMapping: Map<Int, Int>,
     private val resultMapping: Map<Int, Int>,
+    private val resultSound: Sound?,
     title: Component,
     size: Int
 ) {
@@ -104,6 +106,8 @@ class CraftingPlayerView(
                     )
                 }
             }
+
+            resultSound?.let { event.whoClicked.playSound(it) }
             return
         }
     }
