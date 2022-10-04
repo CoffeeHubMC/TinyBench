@@ -24,6 +24,7 @@ class SpigotItemTest {
         val size = 50 x 50
         val recipe = ExactGridRecipe(
             name = "sample",
+            stackable = true,
             source = grid(size, size.slot(0) to ItemStackItem(itemStackA)),
             target = grid(size, size.slot(0) to ItemStackItem(itemStackB))
         )
@@ -53,6 +54,7 @@ class SpigotItemTest {
         val size = 50 x 50
         val recipe = ExactGridRecipe(
             name = "sample",
+            stackable = true,
             source = grid(size, size.slot(0) to ItemStackItem(itemStackA)),
             target = grid(size, size.slot(0) to ItemStackItem(itemStackB))
         )

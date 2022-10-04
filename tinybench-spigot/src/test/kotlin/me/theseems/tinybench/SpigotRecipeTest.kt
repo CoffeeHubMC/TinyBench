@@ -17,6 +17,7 @@ class SpigotRecipeTest {
         TinyBenchAPI.recipeManager.exactContainer.store(
             ExactGridRecipe(
                 name = "test",
+                stackable = true,
                 source = grid(
                     size,
                     size.slot(0) to itemOf(Material.ACACIA_SAPLING),
