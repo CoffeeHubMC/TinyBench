@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 
-class TinybenchTest {
+class TinyBenchTest {
     @Test
     fun `Make sample grid container then check items success`() {
         val size = 5 x 3
@@ -33,6 +33,7 @@ class TinybenchTest {
         val size = 50 x 50
         val recipe = ExactGridRecipe(
             name = "sample",
+            stackable = true,
             source = grid(size, size.slot(0) to TestItem("A")),
             target = grid(size, size.slot(0) to TestItem("B"))
         )
@@ -50,6 +51,7 @@ class TinybenchTest {
         val size = 50 x 50
         val recipe = ExactGridRecipe(
             name = "sample",
+            stackable = true,
             source = grid(size, size.slot(0) to TestItem("A"), size.slot(1) to TestItem("B")),
             target = grid(size, size.slot(0) to TestItem("C"))
         )
