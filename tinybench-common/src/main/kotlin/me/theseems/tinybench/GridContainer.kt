@@ -33,10 +33,10 @@ class GridContainer(val height: Int, val width: Int) {
 
     fun set(x: Int, y: Int, item: Item) {
         if (x > height || x < 0) {
-            throw IllegalStateException("X is higher than allowed dimension")
+            throw IllegalStateException("X is not within the valid range: [0, $height)")
         }
         if (y > width || y < 0) {
-            throw IllegalStateException("Y is higher than allowed dimension")
+            throw IllegalStateException("Y is not within the valid range: [0, $width)")
         }
         content[x][y] = item
     }
@@ -85,23 +85,22 @@ class GridContainer(val height: Int, val width: Int) {
         return Pair(grid, mapping)
     }
 
+    override fun toString(): String {
+        return "GridContainer(height=$height, width=$width, content=${content.contentToString()})"
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
         other as GridContainer
 
-        if (height != other.height) return false
-        if (width != other.width) return false
         if (!content.contentDeepEquals(other.content)) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = height
-        result = 31 * result + width
-        result = 31 * result + content.contentDeepHashCode()
-        return result
+        return content.contentDeepHashCode()
     }
 }
