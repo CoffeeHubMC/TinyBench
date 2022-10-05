@@ -15,9 +15,9 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-class SpigotItemTest {
+class PaperItemTest {
     @Test
-    fun `Check recipe with spigot items then check output success`() {
+    fun `Check recipe with paper items then check output success`() {
         val itemStackA = ItemStack(Material.ACACIA_BOAT)
         val itemStackB = ItemStack(Material.ACACIA_SAPLING)
 
@@ -37,7 +37,7 @@ class SpigotItemTest {
     }
 
     @Test
-    fun `Check recipe with spigot items with custom meta then check output success`() {
+    fun `Check recipe with paper items with custom meta then check output success`() {
         val itemStackA = ItemStack(Material.ACACIA_BOAT).also {
             val meta = it.itemMeta
             meta.setDisplayName("a")

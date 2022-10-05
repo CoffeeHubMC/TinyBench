@@ -1,11 +1,8 @@
 plugins {
     kotlin("jvm") version "1.7.10"
+    `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
-
-val nexusURL: String by project
-val coffeehubUsername: String by project
-val coffeehubPassword: String by project
 
 group = "me.theseems"
 version = parent!!.version
@@ -23,14 +20,6 @@ repositories {
     maven {
         name = "Lumine Releases"
         url = uri("https://mvn.lumine.io/repository/maven-public/")
-    }
-    maven {
-        name = "coffeehub"
-        url = uri(nexusURL)
-        credentials {
-            username = coffeehubUsername
-            password = coffeehubPassword
-        }
     }
 }
 

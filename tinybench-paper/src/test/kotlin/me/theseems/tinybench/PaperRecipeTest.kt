@@ -9,7 +9,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
-class SpigotRecipeTest {
+class PaperRecipeTest {
 
     @Test
     fun `test smth i dunno`() {

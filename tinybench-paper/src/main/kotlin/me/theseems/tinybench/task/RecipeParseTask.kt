@@ -5,6 +5,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import me.theseems.tinybench.TinyBenchAPI
+import me.theseems.tinybench.config.RecipeConfig
+import me.theseems.tinybench.config.RecipeSectionConfig
 import me.theseems.tinybench.recipeManager
 import me.theseems.tinybench.register
 import me.theseems.tinybench.task.recipes.ExactGridRecipeParser
@@ -14,8 +16,6 @@ import me.theseems.toughwiki.impl.bootstrap.Phase
 import java.io.File
 import java.nio.file.Files
 import java.util.logging.Logger
-import me.theseems.tinybench.config.RecipeConfig
-import me.theseems.tinybench.config.RecipeSectionConfig
 import kotlin.streams.asSequence
 
 class RecipeParseTask(private val folder: File) : BootstrapTask("registerRecipes", Phase.CONFIG) {
