@@ -1,6 +1,7 @@
 package me.theseems.tinybench.command
 
 import me.theseems.tinybench.TinyBench
+import me.theseems.toughwiki.ToughWiki
 import me.theseems.toughwiki.impl.bootstrap.Phase
 import me.theseems.toughwiki.paper.commands.SubCommand
 import me.theseems.toughwiki.utils.TextUtils
@@ -21,6 +22,7 @@ class ReloadSubCommand : SubCommand {
 
     override fun execute(sender: CommandSender?, args: Array<out String>?) {
         TinyBench.bootstrap.execute(Phase.SHUTDOWN, Phase.CONFIG, Phase.POST_CONFIG)
+        ToughWiki.getBootstrap().execute(Phase.SHUTDOWN, Phase.CONFIG, Phase.POST_CONFIG)
         sender?.sendMessage(TextUtils.parse("&5Configuration reloaded"))
     }
 }
