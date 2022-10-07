@@ -27,6 +27,8 @@ class RecipeParseTask(private val folder: File) : BootstrapTask("registerRecipes
         }
 
         val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
+        var totalForeignRecipesCount = 0
+
         Files.walk(folder.toPath())
             .asSequence()
             .filter(Files::isRegularFile)
@@ -54,7 +56,9 @@ class RecipeParseTask(private val folder: File) : BootstrapTask("registerRecipes
                 val recipe = recipeParsers[config.type]!!.makeRecipe(name, config, logger)
                 TinyBenchAPI.recipeManager.register(config.type, recipe)
 
-                logger.info("Registered recipe '" + recipe.name + "'")
+                totalForeignRecipesCount++
             }
+
+        logger.info("Total amount of recipes loaded: $totalForeignRecipesCount")
     }
 }
