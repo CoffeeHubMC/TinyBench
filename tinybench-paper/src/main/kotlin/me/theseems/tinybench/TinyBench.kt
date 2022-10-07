@@ -41,11 +41,12 @@ open class TinyBench : JavaPlugin {
         bootstrap.add(UnregisterRecipesTask())
         bootstrap.add(UnregisterViewTask())
 
+        val task = TinyBenchViewHookupTask()
+        bootstrap.add(task)
+
         bootstrap.execute(Phase.PRE_CONFIG, Phase.CONFIG, Phase.POST_CONFIG)
         if (ToughWiki.getBootstrap() != null) {
-            val task = TinyBenchViewHookupTask()
             ToughWiki.getBootstrap().add(task)
-            task.run(plugin.logger)
         }
     }
 
