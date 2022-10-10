@@ -11,6 +11,7 @@ class ExactGridRecipeContainer : RecipeContainer<ExactGridRecipe> {
     private val map: MutableMap<GridContainer, Pair<Map<Slot, Int>, ExactGridRecipe>> = mutableMapOf()
 
     override fun dispose() {
+        map.values.forEach { (_, recipe) -> TinyBenchAPI.recipeManager.disposeRecipe(recipe.name) }
         map.clear()
     }
 
@@ -81,5 +82,6 @@ class ExactGridRecipeContainer : RecipeContainer<ExactGridRecipe> {
 
         val (grid, amounts) = recipe.source.stripAmount()
         map[grid] = Pair(amounts, recipe)
+        TinyBenchAPI.recipeManager.storeRecipe(recipe)
     }
 }

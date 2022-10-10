@@ -22,7 +22,7 @@ import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
-class IFCraftingPlayerView(
+open class IFCraftingPlayerView(
     private val playerUUID: UUID,
     private val options: RecipeOptions,
     private val recipeMapping: Map<Int, Int>,
@@ -42,7 +42,7 @@ class IFCraftingPlayerView(
         chestGui.setOnGlobalDrag { handleDrag(it) }
     }
 
-    private fun handleClick(event: InventoryClickEvent) {
+    protected open fun handleClick(event: InventoryClickEvent) {
         if (event.isCancelled) {
             return
         }
@@ -117,7 +117,7 @@ class IFCraftingPlayerView(
         }
     }
 
-    private fun handleDrag(event: InventoryDragEvent) {
+    protected open fun handleDrag(event: InventoryDragEvent) {
         // Schedule recipe processing logic to the next tick
         tryCraft()
 
@@ -129,7 +129,7 @@ class IFCraftingPlayerView(
         }
     }
 
-    private fun tryCraft() {
+    protected open fun tryCraft() {
         Bukkit.getScheduler().runTask(
             TinyBench.plugin,
             Runnable {
@@ -151,7 +151,7 @@ class IFCraftingPlayerView(
         )
     }
 
-    private fun pickItems(items: Collection<Int>) {
+    protected open fun pickItems(items: Collection<Int>) {
         val player = Bukkit.getPlayer(playerUUID)
             ?: throw IllegalStateException(
                 "There's no player to give items ($items) to. Expected $playerUUID (${
