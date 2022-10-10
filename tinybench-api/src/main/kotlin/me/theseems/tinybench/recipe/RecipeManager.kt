@@ -8,6 +8,9 @@ interface RecipeManager {
     fun drop(name: String)
     fun getAll(): Collection<RecipeContainer<*>>
     fun <T : Recipe> get(type: String): RecipeContainer<T>?
-
+    fun getRecipe(name: String): Recipe?
+    fun getAllRecipes(): Collection<Recipe>
+    fun storeRecipe(recipe: Recipe)
+    fun disposeRecipe(recipeName: String)
     fun produce(items: ItemMapping, options: RecipeOptions): RecipeContainer.RecipeResult
 }

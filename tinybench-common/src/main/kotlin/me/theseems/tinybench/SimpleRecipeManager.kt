@@ -8,6 +8,7 @@ import me.theseems.tinybench.recipe.RecipeOptions
 
 class SimpleRecipeManager : RecipeManager {
     private val containerMap: MutableMap<String, RecipeContainer<*>> = mutableMapOf()
+    private val recipeMap: MutableMap<String, Recipe> = mutableMapOf()
 
     override fun <T : Recipe> store(recipeContainer: RecipeContainer<T>) {
         containerMap[recipeContainer.name] = recipeContainer
@@ -31,6 +32,21 @@ class SimpleRecipeManager : RecipeManager {
     override fun <T : Recipe> get(type: String): RecipeContainer<T>? {
         @Suppress("UNCHECKED_CAST")
         return containerMap[type] as? RecipeContainer<T>?
+    }
+
+    override fun getRecipe(name: String) = recipeMap[name]
+
+    override fun getAllRecipes() = recipeMap.values
+
+    override fun storeRecipe(recipe: Recipe) {
+        if (recipe.name in recipeMap) {
+            throw IllegalStateException("Recipe '${recipe.name}' is already registered")
+        }
+        recipeMap[recipe.name] = recipe
+    }
+
+    override fun disposeRecipe(recipeName: String) {
+        recipeMap.remove(recipeName)
     }
 
     override fun produce(items: ItemMapping, options: RecipeOptions): RecipeContainer.RecipeResult {

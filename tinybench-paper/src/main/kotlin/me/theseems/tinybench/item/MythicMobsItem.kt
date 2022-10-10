@@ -4,12 +4,12 @@ import io.lumine.mythic.api.MythicProvider
 import io.lumine.mythic.bukkit.adapters.BukkitItemStack
 import org.bukkit.inventory.ItemStack
 
-data class MythicMobsItem(private val name: String, override var amount: Int = 1) : Item {
+data class MythicMobsItem(private val name: String, override var amount: Int = 1) : IconItem {
     override fun clone(): Item {
         return MythicMobsItem(name, amount)
     }
 
-    val stack: ItemStack
+    override val stack: ItemStack
         get() {
             return (
                 MythicProvider.get().itemManager.getItem(name).get()
