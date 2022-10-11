@@ -10,9 +10,12 @@ import me.theseems.toughwiki.ToughWiki
 import me.theseems.toughwiki.api.ToughWikiAPI
 import me.theseems.toughwiki.api.WikiPage
 import me.theseems.toughwiki.api.WikiPageItemConfig
+import me.theseems.toughwiki.api.component.ComponentContainer
 import me.theseems.toughwiki.api.view.Action
+import me.theseems.toughwiki.api.view.ActionSender
 import me.theseems.toughwiki.api.view.TriggerType
 import me.theseems.toughwiki.api.view.WikiPageView
+import me.theseems.toughwiki.impl.component.SimpleComponentContainer
 import me.theseems.toughwiki.inventoryframework.adventuresupport.ComponentHolder
 import me.theseems.toughwiki.inventoryframework.gui.GuiItem
 import me.theseems.toughwiki.inventoryframework.gui.type.ChestGui
@@ -20,12 +23,10 @@ import me.theseems.toughwiki.inventoryframework.pane.StaticPane
 import me.theseems.toughwiki.jackson.databind.ObjectMapper
 import me.theseems.toughwiki.jackson.databind.node.ObjectNode
 import me.theseems.toughwiki.jackson.dataformat.yaml.YAMLFactory
-import me.theseems.toughwiki.paper.view.action.sender.InteractEventWikiActionSender
 import me.theseems.toughwiki.utils.TextUtils
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.ClickType
-import org.bukkit.event.inventory.InventoryInteractEvent
 import java.util.*
 
 class CraftingPreviewView(
@@ -93,10 +94,15 @@ class CraftingPreviewView(
                 GuiItem(stack) {
                     it.isCancelled = true
 
-                    val sender = object : InteractEventWikiActionSender {
+                    val container = SimpleComponentContainer()
+                    container.storeValue("event", it)
+                    container.storeValue("chestGui", view)
+                    container.storeValue("slot", it.slot)
+
+                    val sender = object : ActionSender {
                         override fun getItemConfig() = item
                         override fun getView(): WikiPageView = this@CraftingPreviewView
-                        override fun getEvent(): InventoryInteractEvent = it
+                        override fun getContainer(): ComponentContainer = container
                     }
 
                     when (it.click) {
