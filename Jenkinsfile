@@ -26,8 +26,7 @@ pipeline {
                     usernamePassword(
                     credentialsId: 'coffeehubNexusAuth',
                     usernameVariable: 'ORG_GRADLE_PROJECT_coffeehubUsername',
-                    passwordVariable: 'ORG_GRADLE_PROJECT_coffeehubPassword'),
-                    string(credentialsId: 'coffeehubNexusURL', variable: 'ORG_GRADLE_PROJECT_nexusURL')
+                    passwordVariable: 'ORG_GRADLE_PROJECT_coffeehubPassword')
                 ]) {
                     sh script: 'chmod +x gradlew && ./gradlew clean build shadowJar publish', label: 'Build project, make shadow jar and publish it'
                     archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true

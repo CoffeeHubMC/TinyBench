@@ -32,12 +32,12 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.4")
 
-    compileOnly("me.theseems:toughwiki:1.1.0:all")
+    compileOnly("me.theseems:toughwiki:1.2.0:all")
     compileOnly("io.lumine:Mythic-Dist:5.0.3-SNAPSHOT")
     compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
 
     testImplementation(kotlin("test"))
-    testImplementation("me.theseems:toughwiki:1.1.0:all")
+    testImplementation("me.theseems:toughwiki:1.2.0:all")
     testImplementation("com.github.seeseemelk:MockBukkit-v1.19:2.120.1")
 }
 

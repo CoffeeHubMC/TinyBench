@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val nexusURL: String by project
+val devNexusURL: String by project
 val coffeehubUsername: String by project
 val coffeehubPassword: String by project
 
@@ -23,17 +24,13 @@ ext {
 }
 
 group = "me.theseems"
-version = if (ext["devBuild"] as Boolean) getVersionName() else "1.0.1"
+version = if (ext["devBuild"] as Boolean) getVersionName() else "1.0.2"
 
 repositories {
     mavenCentral()
     maven {
         name = "coffeehub"
         url = uri(nexusURL)
-        credentials {
-            username = coffeehubUsername
-            password = coffeehubPassword
-        }
     }
 }
 
@@ -41,6 +38,7 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
+val devBuildEnabled = ext["devBuild"] as Boolean
 subprojects {
     afterEvaluate {
         repositories {
@@ -48,10 +46,6 @@ subprojects {
             maven {
                 name = "coffeehub"
                 url = uri(nexusURL)
-                credentials {
-                    username = coffeehubUsername
-                    password = coffeehubPassword
-                }
             }
         }
         publishing {
@@ -68,7 +62,7 @@ subprojects {
             repositories {
                 maven {
                     name = "coffeehub"
-                    url = uri(nexusURL)
+                    url = uri(if (devBuildEnabled) devNexusURL else nexusURL)
                     credentials {
                         username = coffeehubUsername
                         password = coffeehubPassword
