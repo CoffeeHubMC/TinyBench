@@ -1,11 +1,11 @@
-package me.theseems.tinybench.task.recipes
+package me.theseems.tinybench.recipes
 
 import com.fasterxml.jackson.databind.JsonNode
 import me.theseems.tinybench.ExactGridRecipe
 import me.theseems.tinybench.GridContainer
 import me.theseems.tinybench.config.RecipeConfig
+import me.theseems.tinybench.item.parser.ItemFactory
 import me.theseems.tinybench.slot
-import me.theseems.tinybench.task.items.ItemFactory
 import me.theseems.tinybench.toGridContainer
 import me.theseems.tinybench.util.modifier
 import me.theseems.tinybench.util.modifierOr

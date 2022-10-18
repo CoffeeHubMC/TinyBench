@@ -9,7 +9,7 @@ interface RecipeContainer<T : Recipe> {
     fun dispose(recipe: T)
     fun dispose()
 
-    data class RecipeResult(val items: ItemMapping, val leftovers: ItemMapping)
+    data class RecipeResult(val items: ItemMapping, val leftovers: ItemMapping, val recipe: Recipe)
 
     fun produce(items: ItemMapping, options: RecipeOptions): RecipeResult
 }

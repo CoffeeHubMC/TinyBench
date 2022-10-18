@@ -24,7 +24,7 @@ ext {
 }
 
 group = "me.theseems"
-version = if (ext["devBuild"] as Boolean) getVersionName() else "1.0.2"
+version = if (ext["devBuild"] as Boolean) getVersionName() else "1.1.0"
 
 repositories {
     mavenCentral()

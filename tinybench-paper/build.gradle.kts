@@ -21,6 +21,10 @@ repositories {
         name = "Lumine Releases"
         url = uri("https://mvn.lumine.io/repository/maven-public/")
     }
+    maven {
+        name = "jitpack"
+        url = uri("https://jitpack.io")
+    }
 }
 
 dependencies {
@@ -34,6 +38,7 @@ dependencies {
 
     compileOnly("me.theseems:toughwiki:1.2.0:all")
     compileOnly("io.lumine:Mythic-Dist:5.0.3-SNAPSHOT")
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
 
     testImplementation(kotlin("test"))

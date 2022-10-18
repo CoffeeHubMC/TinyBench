@@ -3,10 +3,12 @@ package me.theseems.tinybench.view
 import me.theseems.tinybench.Slot
 import me.theseems.tinybench.TinyBench
 import me.theseems.tinybench.TinyBenchAPI
+import me.theseems.tinybench.event.RecipeCraftEvent
 import me.theseems.tinybench.item.Item
 import me.theseems.tinybench.item.ItemMapping
 import me.theseems.tinybench.item.ItemStackItem
 import me.theseems.tinybench.item.MythicMobsItem
+import me.theseems.tinybench.recipe.Recipe
 import me.theseems.tinybench.recipe.RecipeOptions
 import me.theseems.tinybench.slot
 import me.theseems.toughwiki.inventoryframework.adventuresupport.ComponentHolder
@@ -31,7 +33,10 @@ open class IFCraftingPlayerView(
     title: Component,
     size: Int
 ) {
+    private val additionalItems: MutableMap<Slot, Item> = mutableMapOf()
+    private var keepResults: Map<Slot, Item> = mutableMapOf()
     private var keepLeftovers: Map<Slot, Item> = mutableMapOf()
+    private var keepRecipe: Recipe? = null
     var chestGui: ChestGui = ChestGui(size, ComponentHolder.of(title))
 
     private val reversedRecipeMapping = recipeMapping.entries.associate { (k, v) -> v to k }
@@ -40,6 +45,22 @@ open class IFCraftingPlayerView(
         chestGui.setOnClose { dispose(closePlayer = it.player as? Player) }
         chestGui.setOnGlobalClick { handleClick(it) }
         chestGui.setOnGlobalDrag { handleDrag(it) }
+    }
+
+    fun addAdditional(slot: Int, item: Item) {
+        if (slot in recipeMapping) {
+            throw IllegalStateException("Tried to add an additional item at existing recipe slot")
+        }
+        additionalItems[options.size.slot(slot)] = item
+    }
+
+    fun addAdditional(slot: Slot, item: Item) = addAdditional(options.size.slot(slot), item)
+    fun removeAdditional(slot: Slot) {
+        additionalItems.remove(slot)
+    }
+
+    fun removeAdditional(slot: Int) {
+        additionalItems.remove(options.size.slot(slot))
     }
 
     protected open fun handleClick(event: InventoryClickEvent) {
@@ -59,6 +80,7 @@ open class IFCraftingPlayerView(
             return
         }
         // Shift+Click should put selected item in a first applicable slot
+        // fucking spaghetti
         if (event.isShiftClick && event.currentItem != null && event.rawSlot >= event.view.topInventory.size) {
             event.isCancelled = true
             val item = event.currentItem!!
@@ -101,6 +123,21 @@ open class IFCraftingPlayerView(
                 event.isCancelled = true
                 return
             }
+
+            // Fire and check an event
+            val craftEvent = RecipeCraftEvent(
+                keepRecipe,
+                event.whoClicked.uniqueId,
+                makeMapping(),
+                keepResults,
+                keepLeftovers
+            )
+            Bukkit.getPluginManager().callEvent(craftEvent)
+            if (craftEvent.isCancelled) {
+                event.isCancelled = true
+                return
+            }
+
             recipeMapping.keys.forEach { chestGui.inventory.setItem(it, null) }
             pickItems(resultMapping.values)
             keepLeftovers.forEach { (slot, item) ->
@@ -133,7 +170,7 @@ open class IFCraftingPlayerView(
         Bukkit.getScheduler().runTask(
             TinyBench.plugin,
             Runnable {
-                val (produced, leftovers) = TinyBenchAPI.instance.recipeManager.produce(makeMapping(), options)
+                val (produced, leftovers, recipe) = TinyBenchAPI.instance.recipeManager.produce(makeMapping(), options)
                 if (produced.isNotEmpty()) {
                     produced.forEach {
                         chestGui.inventory.setItem(
@@ -142,10 +179,14 @@ open class IFCraftingPlayerView(
                             makeItemStackOutOfItem(it.value)
                         )
                     }
+                    keepResults = produced
                     keepLeftovers = leftovers
+                    keepRecipe = recipe
                 } else {
-                    keepLeftovers = mutableMapOf()
                     resultMapping.forEach { chestGui.inventory.setItem(it.value, null) }
+                    keepLeftovers = mutableMapOf()
+                    keepResults = mutableMapOf()
+                    keepRecipe = null
                 }
             }
         )
@@ -200,6 +241,7 @@ open class IFCraftingPlayerView(
             val item = makeItemOutOfItemStack(itemStack)
             result[options.size.slot(it.value)] = item
         }
+        additionalItems.forEach { (slot, item) -> result[slot] = item }
         return result
     }
 

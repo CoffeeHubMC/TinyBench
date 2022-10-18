@@ -1,4 +1,4 @@
-package me.theseems.tinybench.task
+package me.theseems.tinybench.task.recipes
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
@@ -8,9 +8,9 @@ import me.theseems.tinybench.TinyBenchAPI
 import me.theseems.tinybench.config.RecipeConfig
 import me.theseems.tinybench.config.RecipeSectionConfig
 import me.theseems.tinybench.recipeManager
+import me.theseems.tinybench.recipes.ExactGridRecipeParser
+import me.theseems.tinybench.recipes.RecipeParser
 import me.theseems.tinybench.register
-import me.theseems.tinybench.task.recipes.ExactGridRecipeParser
-import me.theseems.tinybench.task.recipes.RecipeParser
 import me.theseems.toughwiki.impl.bootstrap.BootstrapTask
 import me.theseems.toughwiki.impl.bootstrap.Phase
 import java.io.File
@@ -19,7 +19,7 @@ import java.util.logging.Logger
 import kotlin.streams.asSequence
 
 class RecipeParseTask(private val folder: File) : BootstrapTask("registerRecipes", Phase.CONFIG) {
-    private val recipeParsers = mapOf<String, RecipeParser<*>>("exact" to ExactGridRecipeParser())
+    val recipeParsers = mutableMapOf<String, RecipeParser<*>>("exact" to ExactGridRecipeParser())
 
     override fun run(logger: Logger) {
         if (!folder.exists()) {

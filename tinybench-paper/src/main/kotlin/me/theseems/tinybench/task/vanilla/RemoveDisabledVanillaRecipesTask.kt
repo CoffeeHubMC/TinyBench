@@ -1,4 +1,4 @@
-package me.theseems.tinybench.task
+package me.theseems.tinybench.task.vanilla
 
 import me.theseems.tinybench.TinyBench
 import me.theseems.toughwiki.impl.bootstrap.BootstrapTask

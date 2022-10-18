@@ -1,4 +1,4 @@
-package me.theseems.tinybench.task
+package me.theseems.tinybench.task.vanilla
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory

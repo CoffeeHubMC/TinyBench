@@ -1,4 +1,4 @@
-package me.theseems.tinybench.task
+package me.theseems.tinybench.task.command
 
 import me.theseems.tinybench.TinyBench
 import me.theseems.tinybench.command.TinyBenchCommand

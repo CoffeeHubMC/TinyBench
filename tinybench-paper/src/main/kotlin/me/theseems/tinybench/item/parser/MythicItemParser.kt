@@ -1,4 +1,4 @@
-package me.theseems.tinybench.task.items
+package me.theseems.tinybench.item.parser
 
 import me.theseems.tinybench.config.ItemConfig
 import me.theseems.tinybench.item.Item

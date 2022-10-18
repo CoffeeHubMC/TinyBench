@@ -1,4 +1,4 @@
-package me.theseems.tinybench.task
+package me.theseems.tinybench.task.toughwiki
 
 import me.theseems.tinybench.view.CraftingView
 import me.theseems.toughwiki.api.ToughWikiAPI

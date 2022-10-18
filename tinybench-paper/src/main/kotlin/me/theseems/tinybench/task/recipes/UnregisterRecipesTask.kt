@@ -1,4 +1,4 @@
-package me.theseems.tinybench.task
+package me.theseems.tinybench.task.recipes
 
 import me.theseems.tinybench.TinyBenchAPI
 import me.theseems.tinybench.recipeManager

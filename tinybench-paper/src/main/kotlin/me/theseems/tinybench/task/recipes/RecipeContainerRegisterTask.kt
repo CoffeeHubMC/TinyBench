@@ -1,4 +1,4 @@
-package me.theseems.tinybench.task
+package me.theseems.tinybench.task.recipes
 
 import me.theseems.tinybench.ExactGridRecipeContainer
 import me.theseems.tinybench.TinyBenchAPI
