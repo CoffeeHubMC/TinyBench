@@ -31,15 +31,18 @@ class ItemFactory {
 
             val mapper = ObjectMapper()
             val inlineMap = mutableMapOf<String, JsonNode>()
-            split[1].split(",").forEach {
-                val segment = it.split("=")
-                if (segment.size != 2) {
-                    TinyBench.plugin.logger.warning("Unknown inline definition: $segment")
-                    return@forEach
-                }
+            val definitions = split[1].split(",")
+            if (definitions.size > 1 || "=" in definitions[0]) {
+                definitions.forEach {
+                    val segment = it.split("=")
+                    if (segment.size != 2) {
+                        TinyBench.plugin.logger.warning("Unknown inline definition: $segment")
+                        return@forEach
+                    }
 
-                val (name, value) = segment
-                inlineMap[name] = mapper.readTree(value.replace("\'", "\""))
+                    val (name, value) = segment
+                    inlineMap[name] = mapper.readTree(value)
+                }
             }
 
             return map[split[0]]?.parse(ItemConfig(jsonNode.textValue(), inlineMap))

@@ -38,7 +38,7 @@ dependencies {
 
     compileOnly("me.theseems:toughwiki:1.2.0:all")
     compileOnly("io.lumine:Mythic-Dist:5.0.3-SNAPSHOT")
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7")
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
 
     testImplementation(kotlin("test"))

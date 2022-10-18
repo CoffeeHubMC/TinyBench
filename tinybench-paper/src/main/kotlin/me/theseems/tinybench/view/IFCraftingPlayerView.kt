@@ -30,6 +30,7 @@ open class IFCraftingPlayerView(
     private val recipeMapping: Map<Int, Int>,
     private val resultMapping: Map<Int, Int>,
     private val resultSound: Sound?,
+    private val blockedSlots: Set<Int>,
     title: Component,
     size: Int
 ) {
@@ -47,20 +48,27 @@ open class IFCraftingPlayerView(
         chestGui.setOnGlobalDrag { handleDrag(it) }
     }
 
-    fun addAdditional(slot: Int, item: Item) {
-        if (slot in recipeMapping) {
-            throw IllegalStateException("Tried to add an additional item at existing recipe slot")
+    fun fitAdditional(item: Item): Slot? {
+        for (i in 0 until options.size.height) {
+            for (j in 0 until options.size.width) {
+                val slot = Slot(i, j)
+                if (chestGui.inventory.getItem(options.size.slot(slot)) == null && slot !in additionalItems) {
+                    additionalItems[slot] = item
+                    return slot
+                }
+            }
         }
-        additionalItems[options.size.slot(slot)] = item
+        return null
     }
 
-    fun addAdditional(slot: Slot, item: Item) = addAdditional(options.size.slot(slot), item)
-    fun removeAdditional(slot: Slot) {
-        additionalItems.remove(slot)
-    }
-
-    fun removeAdditional(slot: Int) {
-        additionalItems.remove(options.size.slot(slot))
+    fun clearAdditional(predicate: (Item) -> Boolean) {
+        val slotList = mutableListOf<Slot>()
+        additionalItems.forEach { (slot, item) ->
+            if (predicate(item)) {
+                slotList += slot
+            }
+        }
+        slotList.forEach { additionalItems.remove(it) }
     }
 
     protected open fun handleClick(event: InventoryClickEvent) {
@@ -105,6 +113,10 @@ open class IFCraftingPlayerView(
         if (event.rawSlot >= event.view.topInventory.size) {
             return
         }
+        if (event.slot in blockedSlots) {
+            event.isCancelled = true
+            return
+        }
         // Player must not click anything in our GUI besides slots for recipe and for results
         if (event.slot !in recipeMapping && event.slot !in resultMapping.values) {
             event.isCancelled = true
@@ -138,6 +150,7 @@ open class IFCraftingPlayerView(
                 return
             }
 
+            additionalItems.clear()
             recipeMapping.keys.forEach { chestGui.inventory.setItem(it, null) }
             pickItems(resultMapping.values)
             keepLeftovers.forEach { (slot, item) ->
@@ -159,7 +172,7 @@ open class IFCraftingPlayerView(
         tryCraft()
 
         event.newItems.forEach {
-            if (it.key < event.view.topInventory.size && it.key !in recipeMapping) {
+            if (it.key < event.view.topInventory.size && (it.key !in recipeMapping || it.key in blockedSlots)) {
                 event.isCancelled = true
                 return@forEach
             }
@@ -216,6 +229,11 @@ open class IFCraftingPlayerView(
     fun dispose(closePlayer: Player? = null, closed: Boolean = false) {
         val player = closePlayer ?: Bukkit.getPlayer(playerUUID)
 
+        keepRecipe = null
+        keepResults = mutableMapOf()
+        keepLeftovers = mutableMapOf()
+        additionalItems.clear()
+
         for (entry in resultMapping) {
             chestGui.inventory.setItem(entry.value, null)
         }
@@ -237,9 +255,16 @@ open class IFCraftingPlayerView(
     private fun makeMapping(additional: Map<Int, ItemStack>? = null): ItemMapping {
         val result: MutableMap<Slot, Item> = mutableMapOf()
         recipeMapping.forEach {
+            if (it.value in blockedSlots) {
+                return@forEach
+            }
+
             val itemStack = chestGui.inventory.getItem(it.key) ?: additional?.get(it.key) ?: return@forEach
             val item = makeItemOutOfItemStack(itemStack)
-            result[options.size.slot(it.value)] = item
+            val slot = options.size.slot(it.value)
+            additionalItems.remove(slot)
+
+            result[slot] = item
         }
         additionalItems.forEach { (slot, item) -> result[slot] = item }
         return result

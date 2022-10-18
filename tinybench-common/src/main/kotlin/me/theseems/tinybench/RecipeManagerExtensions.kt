@@ -1,5 +1,6 @@
 package me.theseems.tinybench
 
+import me.theseems.tinybench.exact.ExactGridRecipe
 import me.theseems.tinybench.recipe.Recipe
 import me.theseems.tinybench.recipe.RecipeContainer
 import me.theseems.tinybench.recipe.RecipeManager

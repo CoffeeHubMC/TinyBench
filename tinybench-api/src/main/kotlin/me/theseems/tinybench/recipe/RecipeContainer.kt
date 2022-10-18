@@ -9,7 +9,13 @@ interface RecipeContainer<T : Recipe> {
     fun dispose(recipe: T)
     fun dispose()
 
-    data class RecipeResult(val items: ItemMapping, val leftovers: ItemMapping, val recipe: Recipe?)
+    data class RecipeResult(val items: ItemMapping, val leftovers: ItemMapping, val recipe: Recipe?) {
+        companion object {
+            fun empty(items: ItemMapping): RecipeResult {
+                return RecipeResult(emptyMap(), items, null)
+            }
+        }
+    }
 
     fun produce(items: ItemMapping, options: RecipeOptions): RecipeResult
 }

@@ -1,6 +1,6 @@
 package me.theseems.tinybench.view.preview
 
-import me.theseems.tinybench.ExactGridRecipe
+import me.theseems.tinybench.exact.ExactGridRecipe
 import me.theseems.tinybench.item.IconItem
 import me.theseems.tinybench.recipe.Recipe
 import me.theseems.tinybench.slot

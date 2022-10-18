@@ -4,7 +4,6 @@ import me.theseems.tinybench.TinyBench
 import me.theseems.tinybench.event.RecipeCraftEvent
 import me.theseems.tinybench.item.PhantomItem
 import me.theseems.toughwiki.utils.TextUtils
-import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -20,16 +19,16 @@ class MoneyRecipeConstraintListener : Listener {
         }
 
         val requiredMoney = moneyPhantoms.sumOf { it.content.get("cost").asDouble() }
-        val economyProvider = Bukkit.getServer().servicesManager.getRegistration(Economy::class.java)?.provider
+        val economy = TinyBench.vaultSupport.economy
 
-        if (economyProvider == null) {
+        if (economy == null) {
             TinyBench.plugin.logger.warning("No vault found but recipe output requires money withdrawal")
             event.isCancelled = true
             return
         }
 
         val offlinePlayer = Bukkit.getOfflinePlayer(event.playerUUID)
-        if (!economyProvider.has(offlinePlayer, requiredMoney)) {
+        if (!economy.has(offlinePlayer, requiredMoney)) {
             Bukkit.getPlayer(event.playerUUID)
                 ?.sendMessage(
                     TextUtils.parse(
@@ -40,6 +39,6 @@ class MoneyRecipeConstraintListener : Listener {
             event.isCancelled = true
         }
 
-        economyProvider.withdrawPlayer(offlinePlayer, requiredMoney)
+        economy.withdrawPlayer(offlinePlayer, requiredMoney)
     }
 }

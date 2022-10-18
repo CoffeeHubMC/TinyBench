@@ -3,6 +3,7 @@ package me.theseems.tinybench
 import be.seeseemelk.mockbukkit.MockBukkit
 import be.seeseemelk.mockbukkit.ServerMock
 import me.theseems.tinybench.SimpleRecipeOptions.Companion.allowingOnlyRecipes
+import me.theseems.tinybench.exact.ExactGridRecipe
 import me.theseems.tinybench.item.ItemStackItem.Companion.itemOf
 import org.bukkit.Material
 import org.junit.jupiter.api.AfterAll

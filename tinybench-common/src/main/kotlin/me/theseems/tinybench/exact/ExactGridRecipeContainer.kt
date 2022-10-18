@@ -1,9 +1,12 @@
-package me.theseems.tinybench
+package me.theseems.tinybench.exact
 
+import me.theseems.tinybench.Slot
+import me.theseems.tinybench.TinyBenchAPI
 import me.theseems.tinybench.item.Item
 import me.theseems.tinybench.item.ItemMapping
 import me.theseems.tinybench.recipe.RecipeContainer
 import me.theseems.tinybench.recipe.RecipeOptions
+import me.theseems.tinybench.recipeManager
 import kotlin.math.min
 
 class ExactGridRecipeContainer : RecipeContainer<ExactGridRecipe> {

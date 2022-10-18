@@ -1,5 +1,6 @@
 package me.theseems.tinybench
 
+import me.theseems.tinybench.exact.ExactGridRecipe
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test

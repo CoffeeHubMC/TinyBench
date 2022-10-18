@@ -2,6 +2,7 @@ package me.theseems.tinybench
 
 import be.seeseemelk.mockbukkit.MockBukkit
 import be.seeseemelk.mockbukkit.ServerMock
+import me.theseems.tinybench.exact.ExactGridRecipe
 import me.theseems.tinybench.item.ItemStackItem
 import me.theseems.toughwiki.api.ToughWikiAPI
 import me.theseems.toughwiki.impl.SimpleActionEmitter

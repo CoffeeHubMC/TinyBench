@@ -9,7 +9,9 @@ import me.theseems.tinybench.config.RecipeConfig
 import me.theseems.tinybench.config.RecipeSectionConfig
 import me.theseems.tinybench.recipeManager
 import me.theseems.tinybench.recipes.ExactGridRecipeParser
+import me.theseems.tinybench.recipes.LeatherRecipeParser
 import me.theseems.tinybench.recipes.RecipeParser
+import me.theseems.tinybench.recipes.ShapelessRecipeParser
 import me.theseems.tinybench.register
 import me.theseems.toughwiki.impl.bootstrap.BootstrapTask
 import me.theseems.toughwiki.impl.bootstrap.Phase
@@ -19,7 +21,11 @@ import java.util.logging.Logger
 import kotlin.streams.asSequence
 
 class RecipeParseTask(private val folder: File) : BootstrapTask("registerRecipes", Phase.CONFIG) {
-    val recipeParsers = mutableMapOf<String, RecipeParser<*>>("exact" to ExactGridRecipeParser())
+    val recipeParsers = mutableMapOf<String, RecipeParser<*>>(
+        "exact" to ExactGridRecipeParser(),
+        "shapeless" to ShapelessRecipeParser(),
+        "leather" to LeatherRecipeParser()
+    )
 
     override fun run(logger: Logger) {
         if (!folder.exists()) {

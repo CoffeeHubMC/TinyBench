@@ -20,11 +20,6 @@ class AddPhantomItemActionProducer : ActionProducer {
             TinyBench.plugin.logger.warning("Produced $item instead of phantom item")
             return Optional.empty()
         }
-        val slot = node["phantomItemSlot"]?.asInt()
-        if (slot == null) {
-            TinyBench.plugin.logger.warning("No slot was found for a phantom item")
-            return Optional.empty()
-        }
-        return Optional.of(AddPhantomItemAction(triggerType, item, slot))
+        return Optional.of(AddPhantomItemAction(triggerType, item))
     }
 }

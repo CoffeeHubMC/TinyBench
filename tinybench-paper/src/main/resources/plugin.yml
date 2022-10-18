@@ -3,7 +3,7 @@ version: '${version}'
 main: me.theseems.tinybench.TinyBench
 api-version: 1.18
 prefix: TinyBench
-softdepend: [ MythicMobs ]
+softdepend: [ Vault, MythicMobs ]
 depend: [ ToughWiki ]
 authors: [ TheSeems ]
 description: Plugin for custom recipes

@@ -6,9 +6,9 @@ import me.theseems.tinybench.item.MythicMobsItem
 
 class MythicItemParser : ItemParser() {
     override fun parse(itemConfig: ItemConfig): Item {
-        return MythicMobsItem(
+        return MythicMobsItem.from(
             itemConfig.type.split(":")[1],
-            itemConfig.modifiers["amound"]?.asInt(1) ?: 1
+            itemConfig.modifiers["amount"]?.asInt(1) ?: 1
         )
     }
 }

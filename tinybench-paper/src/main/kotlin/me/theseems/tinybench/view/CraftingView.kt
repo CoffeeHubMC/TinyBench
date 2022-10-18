@@ -6,8 +6,13 @@ import me.theseems.tinybench.util.modifier
 import me.theseems.tinybench.util.modifierOr
 import me.theseems.tinybench.x
 import me.theseems.toughwiki.ToughWiki
+import me.theseems.toughwiki.api.ToughWikiAPI
 import me.theseems.toughwiki.api.WikiPage
+import me.theseems.toughwiki.api.view.Action
+import me.theseems.toughwiki.api.view.ActionSender
+import me.theseems.toughwiki.api.view.TriggerType
 import me.theseems.toughwiki.api.view.WikiPageView
+import me.theseems.toughwiki.impl.component.SimpleComponentContainer
 import me.theseems.toughwiki.inventoryframework.gui.GuiItem
 import me.theseems.toughwiki.inventoryframework.pane.StaticPane
 import me.theseems.toughwiki.jackson.databind.ObjectMapper
@@ -21,6 +26,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
+import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.*
 
@@ -58,6 +64,7 @@ class CraftingView(private val page: WikiPage) : Listener, WikiPageView {
                 page.modifier<Map<Int, Int>>("resultSlots")?.entries?.associate { (k, v) -> v to k }
                     ?: throw IllegalStateException("Recipe's result slots mapping is not defined"),
                 sound,
+                page.modifierOr("blockedSlots", linkedSetOf()),
                 TextUtils.parse(page.info.title),
                 page.info.size
             )
@@ -67,8 +74,78 @@ class CraftingView(private val page: WikiPage) : Listener, WikiPageView {
                 val slot = item.modifier<Int>("slot")?.let { size.slot(it) } ?: continue
                 val pane = StaticPane(slot.y, slot.x, 1, 1)
                 val stack = ToughWiki.getItemFactory().produce(Bukkit.getPlayer(player), item)
+                val mapper = ObjectMapper(YAMLFactory())
 
-                pane.addItem(GuiItem(stack) { it.isCancelled = true }, 0, 0)
+                val actionMap: MutableMap<TriggerType, Action> =
+                    EnumMap(me.theseems.toughwiki.api.view.TriggerType::class.java)
+                if (item.modifiers.containsKey("leftClickAction")) {
+                    val type = TriggerType.LEFT_MOUSE_BUTTON
+                    val action = ToughWiki.getActionFactory()
+                        .produce(
+                            type,
+                            item.modifiers["leftClickAction"] as ObjectNode?
+                        )
+                    if (action != null) {
+                        actionMap[type] = action
+                    }
+                }
+                if (item.modifiers.containsKey("rightClickAction")) {
+                    val type = TriggerType.RIGHT_MOUSE_BUTTON
+                    val action = ToughWiki.getActionFactory()
+                        .produce(
+                            type,
+                            item.modifiers["rightClickAction"] as ObjectNode?
+                        )
+                    if (action != null) {
+                        actionMap[type] = action
+                    }
+                }
+                if (actionMap.isEmpty()) {
+                    for (value in TriggerType.values()) {
+                        val produced = ToughWiki.getActionFactory().produce(value, mapper.valueToTree(item)) ?: continue
+                        actionMap[value] = produced
+                    }
+                }
+
+                pane.addItem(
+                    GuiItem(stack) {
+                        try {
+                            val type: TriggerType
+                            when (it.click) {
+                                ClickType.LEFT -> type = TriggerType.LEFT_MOUSE_BUTTON
+                                ClickType.RIGHT -> type = TriggerType.RIGHT_MOUSE_BUTTON
+                                else -> {
+                                    it.isCancelled = true
+                                    return@GuiItem
+                                }
+                            }
+                            if (!actionMap.containsKey(type)) {
+                                it.isCancelled = true
+                                return@GuiItem
+                            }
+
+                            val action = actionMap[type]
+
+                            val container = SimpleComponentContainer()
+                            container.storeValue("playerView", view)
+                            container.storeValue("slot", slot)
+                            container.storeValue("event", it)
+
+                            ToughWikiAPI.getInstance().actionEmitter.emit(
+                                action,
+                                object : ActionSender {
+                                    override fun getItemConfig() = item
+                                    override fun getView() = this@CraftingView
+                                    override fun getContainer() = container
+                                }
+                            )
+                        } finally {
+                            it.isCancelled = true
+                        }
+                    },
+                    0,
+                    0
+                )
                 view.chestGui.addPane(pane)
             }
 

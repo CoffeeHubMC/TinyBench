@@ -2,6 +2,7 @@ package me.theseems.tinybench
 
 import me.theseems.tinybench.config.PreviewConfig
 import me.theseems.tinybench.config.VanillaRecipeConfig
+import me.theseems.tinybench.support.VaultSupport
 import me.theseems.tinybench.task.api.APIInitTask
 import me.theseems.tinybench.task.command.CommandRegisterTask
 import me.theseems.tinybench.task.listener.ListenerRegisterTask
@@ -38,6 +39,9 @@ open class TinyBench : JavaPlugin {
     override fun onEnable() {
         plugin = this
 
+        vaultSupport = VaultSupport()
+        vaultSupport.setupEconomy()
+
         bootstrap = ToughWikiBootstrap(plugin.logger)
         bootstrap.add(APIInitTask())
         bootstrap.add(RecipeContainerRegisterTask())
@@ -73,6 +77,7 @@ open class TinyBench : JavaPlugin {
 
     companion object {
         lateinit var plugin: TinyBench
+        lateinit var vaultSupport: VaultSupport
         lateinit var bootstrap: ToughWikiBootstrap
         lateinit var vanillaRecipeConfig: VanillaRecipeConfig
         lateinit var previewConfig: PreviewConfig

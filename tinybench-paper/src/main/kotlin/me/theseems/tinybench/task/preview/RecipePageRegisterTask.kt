@@ -1,8 +1,8 @@
 package me.theseems.tinybench.task.preview
 
-import me.theseems.tinybench.ExactGridRecipe
 import me.theseems.tinybench.TinyBench
 import me.theseems.tinybench.TinyBenchAPI
+import me.theseems.tinybench.exact.ExactGridRecipe
 import me.theseems.tinybench.recipeManager
 import me.theseems.tinybench.view.preview.IFPreviewViewFactory
 import me.theseems.toughwiki.api.ToughWikiAPI

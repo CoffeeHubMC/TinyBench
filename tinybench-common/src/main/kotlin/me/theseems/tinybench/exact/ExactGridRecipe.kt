@@ -1,4 +1,4 @@
-package me.theseems.tinybench
+package me.theseems.tinybench.exact
 
 import me.theseems.tinybench.item.ItemMapping
 import me.theseems.tinybench.recipe.Recipe

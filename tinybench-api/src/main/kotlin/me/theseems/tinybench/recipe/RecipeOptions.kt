@@ -5,9 +5,10 @@ interface RecipeOptions {
         val blockType: RecipeOptionsBlockType
         val optionsBlockList: Collection<String>
 
-        fun contains(recipe: Recipe) = when (blockType) {
-            RecipeOptionsBlockType.BLOCK_LIST -> recipe.name in optionsBlockList
-            RecipeOptionsBlockType.ALLOW_LIST -> recipe.name !in optionsBlockList
+        fun contains(recipe: Recipe) = contains(recipe.name)
+        fun contains(recipe: String) = when (blockType) {
+            RecipeOptionsBlockType.BLOCK_LIST -> recipe in optionsBlockList
+            RecipeOptionsBlockType.ALLOW_LIST -> recipe !in optionsBlockList
         }
     }
 

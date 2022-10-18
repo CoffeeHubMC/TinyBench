@@ -1,5 +1,6 @@
-package me.theseems.tinybench
+package me.theseems.tinybench.exact
 
+import me.theseems.tinybench.Slot
 import me.theseems.tinybench.item.Item
 import me.theseems.tinybench.item.ItemMapping
 import me.theseems.tinybench.recipe.RecipeOptions
@@ -32,11 +33,11 @@ class GridContainer(val height: Int, val width: Int) {
     val content: Array<Array<Item?>> = Array(height) { Array(width) { null } }
 
     fun set(x: Int, y: Int, item: Item) {
-        if (x > height || x < 0) {
-            throw IllegalStateException("X is not within the valid range: [0, $height)")
+        if (x >= height || x < 0) {
+            throw IllegalStateException("X=$x is not within the valid range: [0, $height)")
         }
-        if (y > width || y < 0) {
-            throw IllegalStateException("Y is not within the valid range: [0, $width)")
+        if (y >= width || y < 0) {
+            throw IllegalStateException("Y=$y is not within the valid range: [0, $width)")
         }
         content[x][y] = item
     }
