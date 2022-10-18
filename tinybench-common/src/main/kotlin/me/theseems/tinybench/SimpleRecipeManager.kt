@@ -51,11 +51,11 @@ class SimpleRecipeManager : RecipeManager {
 
     override fun produce(items: ItemMapping, options: RecipeOptions): RecipeContainer.RecipeResult {
         containerMap.values.forEach {
-            val (produced, leftovers) = it.produce(items, options)
+            val (produced, leftovers, recipe) = it.produce(items, options)
             if (produced.isNotEmpty()) {
-                return RecipeContainer.RecipeResult(produced, leftovers)
+                return RecipeContainer.RecipeResult(produced, leftovers, recipe)
             }
         }
-        return RecipeContainer.RecipeResult(emptyMap(), items)
+        return RecipeContainer.RecipeResult(emptyMap(), items, null)
     }
 }

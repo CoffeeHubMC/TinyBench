@@ -16,7 +16,7 @@ class ExactGridRecipeContainer : RecipeContainer<ExactGridRecipe> {
     }
 
     override fun produce(items: ItemMapping, options: RecipeOptions): RecipeContainer.RecipeResult {
-        val emptyResult = RecipeContainer.RecipeResult(emptyMap(), items)
+        val emptyResult = RecipeContainer.RecipeResult(emptyMap(), items, null)
 
         val singularGrid = items.toSingularGridContainer(options.size)
         val (amounts, recipe) = map[singularGrid] ?: return emptyResult
@@ -28,7 +28,7 @@ class ExactGridRecipeContainer : RecipeContainer<ExactGridRecipe> {
             if (produced.isEmpty()) {
                 return emptyResult
             }
-            return RecipeContainer.RecipeResult(produced, emptyMap())
+            return RecipeContainer.RecipeResult(produced, emptyMap(), recipe)
         }
 
         var times: Int? = null
@@ -66,7 +66,7 @@ class ExactGridRecipeContainer : RecipeContainer<ExactGridRecipe> {
             leftovers[slot] = leftItem
         }
 
-        return RecipeContainer.RecipeResult(result, leftovers)
+        return RecipeContainer.RecipeResult(result, leftovers, recipe)
     }
 
     override fun dispose(recipe: ExactGridRecipe) {
