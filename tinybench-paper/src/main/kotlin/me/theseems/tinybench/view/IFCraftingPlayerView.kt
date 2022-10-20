@@ -4,6 +4,7 @@ import me.theseems.tinybench.Slot
 import me.theseems.tinybench.TinyBench
 import me.theseems.tinybench.TinyBenchAPI
 import me.theseems.tinybench.event.RecipeCraftEvent
+import me.theseems.tinybench.item.IconItem
 import me.theseems.tinybench.item.Item
 import me.theseems.tinybench.item.ItemMapping
 import me.theseems.tinybench.item.ItemStackItem
@@ -49,26 +50,20 @@ open class IFCraftingPlayerView(
     }
 
     fun fitAdditional(item: Item): Slot? {
-        for (i in 0 until options.size.height) {
-            for (j in 0 until options.size.width) {
-                val slot = Slot(i, j)
-                if (chestGui.inventory.getItem(options.size.slot(slot)) == null && slot !in additionalItems) {
-                    additionalItems[slot] = item
-                    return slot
-                }
+        for ((inventorySlot, benchSlotNumber) in recipeMapping) {
+            val slot = options.size.slot(benchSlotNumber)
+            if (chestGui.inventory.getItem(inventorySlot) == null && slot !in additionalItems) {
+                additionalItems[slot] = item
+                tryCraft()
+                return slot
             }
         }
         return null
     }
 
     fun clearAdditional(predicate: (Item) -> Boolean) {
-        val slotList = mutableListOf<Slot>()
-        additionalItems.forEach { (slot, item) ->
-            if (predicate(item)) {
-                slotList += slot
-            }
-        }
-        slotList.forEach { additionalItems.remove(it) }
+        additionalItems.entries.removeIf { predicate(it.value) }
+        tryCraft()
     }
 
     protected open fun handleClick(event: InventoryClickEvent) {
@@ -188,7 +183,13 @@ open class IFCraftingPlayerView(
                     produced.forEach {
                         chestGui.inventory.setItem(
                             resultMapping[options.size.slot(it.key)]
-                                ?: throw IllegalStateException("No slot for reward"),
+                                ?: throw IllegalStateException(
+                                    "No slot for reward: ${it.key} (mapped ${
+                                    options.size.slot(
+                                        it.key
+                                    )
+                                    })"
+                                ),
                             makeItemStackOutOfItem(it.value)
                         )
                     }
@@ -261,8 +262,12 @@ open class IFCraftingPlayerView(
 
             val itemStack = chestGui.inventory.getItem(it.key) ?: additional?.get(it.key) ?: return@forEach
             val item = makeItemOutOfItemStack(itemStack)
+
             val slot = options.size.slot(it.value)
-            additionalItems.remove(slot)
+            if (additionalItems[slot] != null) {
+                additionalItems[slot]?.let { additionalItemShift -> fitAdditional(additionalItemShift) }
+                additionalItems.remove(slot)
+            }
 
             result[slot] = item
         }
@@ -276,11 +281,7 @@ open class IFCraftingPlayerView(
     }
 
     private fun makeItemStackOutOfItem(item: Item): ItemStack? {
-        // TODO: extend
-        if (item is ItemStackItem) {
-            return item.itemStack
-        }
-        if (item is MythicMobsItem) {
+        if (item is IconItem) {
             return item.stack
         }
         return null
