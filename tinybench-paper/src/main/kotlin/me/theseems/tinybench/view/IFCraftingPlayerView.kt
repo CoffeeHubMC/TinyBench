@@ -19,6 +19,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
@@ -127,6 +128,10 @@ open class IFCraftingPlayerView(
         // to their inventory
         if (event.slot in resultMapping.values && event.view.topInventory.getItem(event.slot) != null) {
             if (event.cursor?.type != Material.AIR) {
+                event.isCancelled = true
+                return
+            }
+            if (event.click == ClickType.NUMBER_KEY) {
                 event.isCancelled = true
                 return
             }
