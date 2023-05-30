@@ -1,5 +1,6 @@
 package me.theseems.tinybench.view.preview
 
+import java.util.UUID
 import me.theseems.tinybench.exact.ExactGridRecipe
 import me.theseems.tinybench.item.IconItem
 import me.theseems.tinybench.recipe.Recipe
@@ -27,12 +28,11 @@ import me.theseems.toughwiki.utils.TextUtils
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.ClickType
-import java.util.*
 
 class CraftingPreviewView(
     private val page: WikiPage,
     private val recipe: Recipe,
-    private val additionalItems: List<WikiPageItemConfig>
+    private val additionalItems: List<WikiPageItemConfig>,
 ) : Listener, WikiPageView {
     private val view: ChestGui = makeView()
 
@@ -72,20 +72,20 @@ class CraftingPreviewView(
             if ("leftClickAction" in item.modifiers) {
                 ToughWiki.getActionFactory().produce(
                     TriggerType.LEFT_MOUSE_BUTTON,
-                    item.modifiers["leftClickAction"] as ObjectNode?
+                    item.modifiers["leftClickAction"] as ObjectNode?,
                 )?.let { actionMap[TriggerType.LEFT_MOUSE_BUTTON] = it }
             }
             if ("rightClickAction" in item.modifiers) {
                 ToughWiki.getActionFactory().produce(
                     TriggerType.RIGHT_MOUSE_BUTTON,
-                    item.modifiers["rightClickAction"] as ObjectNode?
+                    item.modifiers["rightClickAction"] as ObjectNode?,
                 )?.let { actionMap[TriggerType.RIGHT_MOUSE_BUTTON] = it }
             }
             if (actionMap.isEmpty()) {
                 for (value in TriggerType.values()) {
                     ToughWiki.getActionFactory().produce(
                         TriggerType.LEFT_MOUSE_BUTTON,
-                        ObjectMapper(YAMLFactory()).valueToTree(item.modifiers)
+                        ObjectMapper(YAMLFactory()).valueToTree(item.modifiers),
                     )?.let { actionMap[value] = it }
                 }
             }
@@ -120,7 +120,7 @@ class CraftingPreviewView(
                     }
                 },
                 0,
-                0
+                0,
             )
             view.addPane(pane)
         }
@@ -136,12 +136,12 @@ class CraftingPreviewView(
                 val mappedSlot = recipeSlots[sourceSize.slot(slot)]?.let { size.slot(it) }
                     ?: throw IllegalStateException(
                         "No source slot to map: $slot -> ${sourceSize.slot(slot)} -> ${
-                        recipeSlots[
-                            size.slot(
-                                slot
-                            )
-                        ]
-                        }?? ($recipeSlots)"
+                            recipeSlots[
+                                size.slot(
+                                    slot,
+                                ),
+                            ]
+                        }?? ($recipeSlots)",
                     )
 
                 val pane = StaticPane(mappedSlot.y, mappedSlot.x, 1, 1)
@@ -158,12 +158,12 @@ class CraftingPreviewView(
                 val mappedSlot = resultSlots[targetSize.slot(slot)]?.let { size.slot(it) }
                     ?: throw IllegalStateException(
                         "No result slot to map: $slot -> ${targetSize.slot(slot)} -> ${
-                        resultSlots[
-                            size.slot(
-                                slot
-                            )
-                        ]
-                        }?? ($resultSlots)"
+                            resultSlots[
+                                size.slot(
+                                    slot,
+                                ),
+                            ]
+                        }?? ($resultSlots)",
                     )
 
                 val pane = StaticPane(mappedSlot.y, mappedSlot.x, 1, 1)

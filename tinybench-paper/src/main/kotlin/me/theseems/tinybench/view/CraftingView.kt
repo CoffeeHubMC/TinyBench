@@ -1,5 +1,7 @@
 package me.theseems.tinybench.view
 
+import java.util.EnumMap
+import java.util.UUID
 import me.theseems.tinybench.SimpleRecipeOptions.Companion.options
 import me.theseems.tinybench.slot
 import me.theseems.tinybench.util.modifier
@@ -28,7 +30,6 @@ import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.player.PlayerQuitEvent
-import java.util.*
 
 class CraftingView(private val page: WikiPage) : Listener, WikiPageView {
     private val playerMap: MutableMap<UUID, IFCraftingPlayerView> = mutableMapOf()
@@ -52,7 +53,7 @@ class CraftingView(private val page: WikiPage) : Listener, WikiPageView {
                         Key.key(it),
                         Sound.Source.AMBIENT,
                         page.modifierOr("resultSoundVolume", 1f),
-                        page.modifierOr("resultSoundPitch", 1f)
+                        page.modifierOr("resultSoundPitch", 1f),
                     )
                 }
 
@@ -66,7 +67,7 @@ class CraftingView(private val page: WikiPage) : Listener, WikiPageView {
                 sound,
                 page.modifierOr("blockedSlots", linkedSetOf()),
                 TextUtils.parse(page.info.title),
-                page.info.size
+                page.info.size,
             )
 
             val size = page.info.size x 9
@@ -83,7 +84,7 @@ class CraftingView(private val page: WikiPage) : Listener, WikiPageView {
                     val action = ToughWiki.getActionFactory()
                         .produce(
                             type,
-                            item.modifiers["leftClickAction"] as ObjectNode?
+                            item.modifiers["leftClickAction"] as ObjectNode?,
                         )
                     if (action != null) {
                         actionMap[type] = action
@@ -94,7 +95,7 @@ class CraftingView(private val page: WikiPage) : Listener, WikiPageView {
                     val action = ToughWiki.getActionFactory()
                         .produce(
                             type,
-                            item.modifiers["rightClickAction"] as ObjectNode?
+                            item.modifiers["rightClickAction"] as ObjectNode?,
                         )
                     if (action != null) {
                         actionMap[type] = action
@@ -137,14 +138,14 @@ class CraftingView(private val page: WikiPage) : Listener, WikiPageView {
                                     override fun getItemConfig() = item
                                     override fun getView() = this@CraftingView
                                     override fun getContainer() = container
-                                }
+                                },
                             )
                         } finally {
                             it.isCancelled = true
                         }
                     },
                     0,
-                    0
+                    0,
                 )
                 view.chestGui.addPane(pane)
             }

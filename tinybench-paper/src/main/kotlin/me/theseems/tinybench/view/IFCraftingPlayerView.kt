@@ -1,5 +1,6 @@
 package me.theseems.tinybench.view
 
+import java.util.UUID
 import me.theseems.tinybench.Slot
 import me.theseems.tinybench.TinyBench
 import me.theseems.tinybench.TinyBenchAPI
@@ -24,7 +25,6 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.inventory.ItemStack
-import java.util.*
 
 open class IFCraftingPlayerView(
     private val playerUUID: UUID,
@@ -34,7 +34,7 @@ open class IFCraftingPlayerView(
     private val resultSound: Sound?,
     private val blockedSlots: Set<Int>,
     title: Component,
-    size: Int
+    size: Int,
 ) {
     private val additionalItems: MutableMap<Slot, Item> = mutableMapOf()
     private var keepResults: Map<Slot, Item> = mutableMapOf()
@@ -94,7 +94,7 @@ open class IFCraftingPlayerView(
                     chestGui.inventory.setItem(key, item)
                     return
                 } else if (chestGui.inventory.getItem(key)!!
-                    .isSimilar(item) && chestGui.inventory.getItem(key)!!.amount + item.amount <= item.maxStackSize
+                        .isSimilar(item) && chestGui.inventory.getItem(key)!!.amount + item.amount <= item.maxStackSize
                 ) {
                     val located = chestGui.inventory.getItem(key)
                     located!!.amount += item.amount
@@ -142,7 +142,7 @@ open class IFCraftingPlayerView(
                 event.whoClicked.uniqueId,
                 makeMapping(),
                 keepResults,
-                keepLeftovers
+                keepLeftovers,
             )
             Bukkit.getPluginManager().callEvent(craftEvent)
             if (craftEvent.isCancelled) {
@@ -152,12 +152,14 @@ open class IFCraftingPlayerView(
 
             additionalItems.clear()
             recipeMapping.keys.forEach { chestGui.inventory.setItem(it, null) }
-            pickItems(resultMapping.values)
+
+            Bukkit.getScheduler().runTask(TinyBench.plugin, Runnable { pickItems(resultMapping.values) })
+
             keepLeftovers.forEach { (slot, item) ->
                 reversedRecipeMapping[options.size.slot(slot)]?.let {
                     chestGui.inventory.setItem(
                         it,
-                        makeItemStackOutOfItem(item)
+                        makeItemStackOutOfItem(item),
                     )
                 }
             }
@@ -180,6 +182,30 @@ open class IFCraftingPlayerView(
     }
 
     protected open fun tryCraft() {
+        val (produced, leftovers, recipe) = TinyBenchAPI.instance.recipeManager.produce(makeMapping(), options)
+        if (produced.isNotEmpty()) {
+            produced.forEach {
+                chestGui.inventory.setItem(
+                    resultMapping[options.size.slot(it.key)]
+                        ?: throw IllegalStateException(
+                            "No slot for reward: ${it.key} (mapped ${
+                                options.size.slot(
+                                    it.key,
+                                )
+                            })",
+                        ),
+                    makeItemStackOutOfItem(it.value),
+                )
+            }
+            keepResults = produced
+            keepLeftovers = leftovers
+            keepRecipe = recipe
+        } else {
+            resultMapping.forEach { chestGui.inventory.setItem(it.value, null) }
+            keepLeftovers = mutableMapOf()
+            keepResults = mutableMapOf()
+            keepRecipe = null
+        }
         Bukkit.getScheduler().runTask(
             TinyBench.plugin,
             Runnable {
@@ -190,12 +216,12 @@ open class IFCraftingPlayerView(
                             resultMapping[options.size.slot(it.key)]
                                 ?: throw IllegalStateException(
                                     "No slot for reward: ${it.key} (mapped ${
-                                    options.size.slot(
-                                        it.key
-                                    )
-                                    })"
+                                        options.size.slot(
+                                            it.key,
+                                        )
+                                    })",
                                 ),
-                            makeItemStackOutOfItem(it.value)
+                            makeItemStackOutOfItem(it.value),
                         )
                     }
                     keepResults = produced
@@ -207,7 +233,7 @@ open class IFCraftingPlayerView(
                     keepResults = mutableMapOf()
                     keepRecipe = null
                 }
-            }
+            },
         )
     }
 
@@ -215,10 +241,10 @@ open class IFCraftingPlayerView(
         val player = Bukkit.getPlayer(playerUUID)
             ?: throw IllegalStateException(
                 "There's no player to give items ($items) to. Expected $playerUUID (${
-                Bukkit.getOfflinePlayer(
-                    playerUUID
-                ).name
-                })"
+                    Bukkit.getOfflinePlayer(
+                        playerUUID,
+                    ).name
+                })",
             )
 
         items.forEach {
